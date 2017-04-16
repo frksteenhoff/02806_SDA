@@ -1,5 +1,5 @@
 # frksteenhoff.github.io
-Work from course at The Thechnical University of Denmark in machine learning, visualization and data processing.
+Work from course 02806 - Social Data Analysis and Visualization at The Technical University of Denmark. The repo includes: machine learning techniques, visualization and data processing.
 
 # 02806_SocialData
 

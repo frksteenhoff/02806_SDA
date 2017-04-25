@@ -1,3 +1,6 @@
+# --------------------------------------------------------------- #
+## LIBRARIES
+# --------------------------------------------------------------- #
 # Plotting with plotly
 import plotly 
 from IPython.display import Image
@@ -7,12 +10,19 @@ import plotly.plotly as py
 import plotly.graph_objs as go
 from collections import Counter 
 import geoplotlib as gpl
+from plotly import tools
 from geoplotlib.utils import BoundingBox
 
+# --------------------------------------------------------------- #
+## VARIABLES
+# --------------------------------------------------------------- #
 # Plotting color variables
 bgBorder  = 'rgba(255, 255, 255, 0)'
 ticksAxes = 'rgb(107, 107, 107)'
 
+# --------------------------------------------------------------- #
+## FUNCTIONS
+# --------------------------------------------------------------- #
 # Get subset of dataset values
 def getValuesFromDataFrame(dataFrame, feature, listOfValues):
     data = dataFrame.loc[dataFrame[feature].isin(listOfValues)]
@@ -46,6 +56,8 @@ def plotGeoData(dataFrame, feature, label):
 	    gpl.inline()
 	    plot_inc_d = {}
 
+# --------------------------------------------------------------- #
+
 
 # 2 Count occurences of each value in dataframe for plotting
 def countSamples(sampleSeries):
@@ -54,65 +66,15 @@ def countSamples(sampleSeries):
 	   	sample_count[sample] += 1
 	return sample_count
 
+# --------------------------------------------------------------- #
+
+
 # Function plotting bar plot given dictionary and basic information
 def createBarPlot(valueDict, plotTitle, xtitle, ytitle, nameToSave, bgBorder, ticksAxes, marginValue):
 
     # Plot bar chart of vehicle types involved in collisions
-    labels, values = sorted(zip(*valueDict.most_common()))
+    labels, values = zip(*valueDict.most_common())
 
-    data = [go.Bar(
-              x = labels,
-              y = values
-    )]
-
-    # Setting layout details for plot
-    layout = go.Layout(
-        title=plotTitle,
-        autosize=False,
-        width=900,
-        height=700,
-
-        margin=dict(
-            b=marginValue
-        ),
-
-        xaxis=dict(
-            title=xtitle,
-            ticklen=15,
-            tickfont=dict(
-                size=14,
-                color=ticksAxes
-            )
-        ),
-
-        yaxis=dict(
-            range=[min(values)-1,max(values+1)],
-            title=ytitle,
-            titlefont=dict(
-                size=16,
-                color=ticksAxes
-            ),
-            tickfont=dict(
-                size=16,
-                color=ticksAxes
-            )
-        ),
-
-        legend=dict(
-            x=0,
-            y=1.0,
-            bgcolor=bgBorder,
-            bordercolor=bgBorder
-        )
-    )
-
-    fig = go.Figure(data=data, layout=layout)
-    py.image.save_as(fig, filename=nameToSave+'.png')
-    return Image(nameToSave+'.png') # Display a static image
-
-
-# Plot two lists in bar plotly
-def createXYBarPlot(labels, values, plotTitle, xtitle, ytitle, nameToSave, bgBorder, ticksAxes, marginValue):
     data = [go.Bar(
               x = labels,
               y = values
@@ -156,9 +118,110 @@ def createXYBarPlot(labels, values, plotTitle, xtitle, ytitle, nameToSave, bgBor
             y=1.0,
             bgcolor=bgBorder,
             bordercolor=bgBorder
+        )
+    )
+
+    fig = go.Figure(data=data, layout=layout)
+    py.image.save_as(fig, filename=nameToSave+'.png')
+    return Image(nameToSave+'.png') # Display a static image
+
+# --------------------------------------------------------------- #
+
+
+# Plot two lists in bar plotly
+def createXYBarPlot(labels, values, plotTitle, xtitle, ytitle, nameToSave, bgBorder, ticksAxes, marginValue):
+    data = [go.Bar(
+              x = labels,
+              y = values
+    )]
+
+    # Setting layout details for plot
+    layout = go.Layout(
+        title=plotTitle,
+        autosize=False,
+        width=700,
+        height=500,
+
+        margin=dict(
+            b=marginValue
+        ),
+
+        xaxis=dict(
+            title=xtitle,
+            ticklen=15,
+            tickfont=dict(
+                size=14,
+                color=ticksAxes
+            )
+        ),
+
+        yaxis=dict(
+            range=[0,max(values)+1],
+            title=ytitle,
+            titlefont=dict(
+                size=16,
+                color=ticksAxes
+            ),
+            tickfont=dict(
+                size=16,
+                color=ticksAxes
+            )
+        ),
+
+        legend=dict(
+            x=0,
+            y=1.0,
+            bgcolor=bgBorder,
+            bordercolor=bgBorder
         )	
     )
 
     fig = go.Figure(data=data, layout=layout)
     py.image.save_as(fig, filename=nameToSave+'.png')
     return Image(nameToSave+'.png') # Display a static image
+
+# --------------------------------------------------------------- #
+
+# A template for plotting several bar charts in subplot
+# numRows/cols  - number of rows and columns in plot grid, int
+# plotTitles    - listlike, all names of plot as string
+# dataFrame     - dataframe to extract features from
+# feature       - feature to extract
+# sampleFeature - feature to sample on 
+def plotBarInSubplotGrid(numRows, numCols, subplotTitles, plotTitle, dataFrame, feature, sampleFeature, saveName, maxRange, w, h):
+    sample_cnt = {}
+    i = 1 # Keeping track of plot grid columns
+    j = 1 # Keeping track of plot grid rows
+    k = 1 # Setting axis range for all y axes 
+
+
+    # Creating initial figure for subplots
+    fig = tools.make_subplots(rows=2, cols=3, subplot_titles=(subplotTitles))
+
+    for val in dataFrame[feature].unique():
+        # Find needed values from dataframe
+        temp       = dataFrame.loc[dataFrame[feature].isin([val])]
+        # Count instances of each
+        sample_cnt = countSamples(sorted(temp[sampleFeature]))
+        
+        trace = go.Bar(
+            x=sample_cnt.keys(),
+            y=sample_cnt.values()
+        )
+
+        # Creating each subplot
+        fig.append_trace(trace, j, i)
+        fig['layout']['yaxis'+str(k)].update(title='Number of incidents', range=[0,maxRange])
+        
+        # Follow the grid size
+        if i < numCols:            
+            i += 1
+        else:
+            j += 1
+            i  = 1
+        k += 1
+
+    # Plot result
+    fig['layout'].update(height=h, width=w, title=plotTitle, margin=dict(b=100))
+    py.image.save_as(fig, filename=saveName+'.png')
+    return py.iplot(fig, filename='temp')

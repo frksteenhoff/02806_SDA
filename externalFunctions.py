@@ -123,7 +123,7 @@ def createBarPlot(valueDict, plotTitle, xtitle, ytitle, nameToSave, bgBorder, ti
 
     fig = go.Figure(data=data, layout=layout)
     py.image.save_as(fig, filename=nameToSave+'.png')
-    return Image(nameToSave+'.png') # Display a static image
+    return py.iplot(fig) # Display a static image
 
 # --------------------------------------------------------------- #
 
@@ -178,7 +178,7 @@ def createXYBarPlot(labels, values, plotTitle, xtitle, ytitle, nameToSave, bgBor
 
     fig = go.Figure(data=data, layout=layout)
     py.image.save_as(fig, filename=nameToSave+'.png')
-    return Image(nameToSave+'.png') # Display a static image
+    return py.iplot(fig) # Display a static image
 
 # --------------------------------------------------------------- #
 

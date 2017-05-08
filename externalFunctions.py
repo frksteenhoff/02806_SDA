@@ -1,6 +1,7 @@
 # --------------------------------------------------------------- #
 ## LIBRARIES
 # --------------------------------------------------------------- #
+from __future__ import division
 # Plotting with plotly
 import plotly 
 from IPython.display import Image
@@ -225,3 +226,16 @@ def plotBarInSubplotGrid(numRows, numCols, subplotTitles, plotTitle, dataFrame, 
     fig['layout'].update(height=h, width=w, title=plotTitle, margin=dict(b=100))
     py.image.save_as(fig, filename=saveName+'.png')
     return py.iplot(fig, filename='temp')
+
+
+# --------------------------------------------------------------- #
+# FUNCTIONS USED FOR MACHINE LEARNING PURPOSES
+# --------------------------------------------------------------- #
+
+# Calculating the score for train and test data
+def score(pred_data, test_data):
+    c = 0
+    for i in range(len(test_data)):
+        if pred_data[i] == test_data[i]:
+            c += 1
+    return c/len(test_data)

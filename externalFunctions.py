@@ -1,3 +1,7 @@
+# Henriette Steenhoff, Jonas Søndergaard Schmidt, DTU May 2017
+# Function definitions used in Explainer Notebook found at:
+# http://nbviewer.jupyter.org/github/frksteenhoff/02806_SDA/blob/master/02806_FinalProject-ExplainerNotebook.ipynb
+
 # --------------------------------------------------------------- #
 ## LIBRARIES
 # --------------------------------------------------------------- #
@@ -25,11 +29,16 @@ ticksAxes = 'rgb(107, 107, 107)'
 ## FUNCTIONS
 # --------------------------------------------------------------- #
 # Get subset of dataset values
+# dataFrame    - pandas dataframe
+# feature      - column value to count
+# listOfValues - values to find in feature column
 def getValuesFromDataFrame(dataFrame, feature, listOfValues):
     data = dataFrame.loc[dataFrame[feature].isin(listOfValues)]
     return data
 
 # 1 Count occurences of each value in dataframe for plotting
+# dataFrame - pandas dataframe
+# feature   - column value to count
 def countValuesInDataFrame(dataFrame, feature):
     val_cnt = {}
     for val in list(set(dataFrame[feature])):
@@ -37,6 +46,9 @@ def countValuesInDataFrame(dataFrame, feature):
     return val_cnt
 
 # Plot data based in year range, for all borough etc. with Geoplotlib
+# dataFrame - pandas dataframe
+# feature   - column value to fetch (lon/lat) data from (have to read as LATITUDE/LONGITUDE)
+# label     - 
 def plotGeoData(dataFrame, feature, label):
 	plot_inc_d = {}
 	for inc in dataFrame[feature].unique():
@@ -61,6 +73,7 @@ def plotGeoData(dataFrame, feature, label):
 
 
 # 2 Count occurences of each value in dataframe for plotting
+# sampleSeries - series from dataframe to count on
 def countSamples(sampleSeries):
 	sample_count = Counter()
 	for sample in sampleSeries:
@@ -69,7 +82,13 @@ def countSamples(sampleSeries):
 
 # --------------------------------------------------------------- #
 
-
+# valueDict   values and labels for plots (listlike, string/int)
+# plotTitle - title plot (string)
+# x/ytitle    - axis labels (string)
+# nameToSave  - name on file to save
+# bgBorder    - borderColor
+# ticksAxes   - axes color
+# marginValue - space (px) for x axis labels
 # Function plotting bar plot given dictionary and basic information
 def createBarPlot(valueDict, plotTitle, xtitle, ytitle, nameToSave, bgBorder, ticksAxes, marginValue):
 
@@ -130,6 +149,14 @@ def createBarPlot(valueDict, plotTitle, xtitle, ytitle, nameToSave, bgBorder, ti
 
 
 # Plot two lists in bar plotly
+# labels      - labels on plots (listlike, string/int)
+# values      - values for each label (listlike, numeral)
+# plotTitle - title plot (string)
+# x/ytitle    - axis labels (string)
+# nameToSave  - name on file to save
+# bgBorder    - borderColor
+# ticksAxes   - axes color
+# marginValue - space (px) for x axis labels 
 def createXYBarPlot(labels, values, plotTitle, xtitle, ytitle, nameToSave, bgBorder, ticksAxes, marginValue):
     data = [go.Bar(
               x = labels,

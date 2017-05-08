@@ -77,7 +77,7 @@ def plotGeoData(dataFrame, feature, label):
 def countSamples(sampleSeries):
 	sample_count = Counter()
 	for sample in sampleSeries:
-	   	sample_count[sample] += 1
+	   	sample_count[str(sample)] += 1
 	return sample_count
 
 # --------------------------------------------------------------- #

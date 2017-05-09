@@ -1,4 +1,4 @@
-# Henriette Steenhoff, Jonas Søndergaard Schmidt, DTU May 2017
+# Henriette Steenhoff, Jonas Soendergaard Schmidt, DTU May 2017
 # Function definitions used in Explainer Notebook found at:
 # http://nbviewer.jupyter.org/github/frksteenhoff/02806_SDA/blob/master/02806_FinalProject-ExplainerNotebook.ipynb
 
@@ -64,9 +64,10 @@ def plotGeoData(dataFrame, feature, label):
 	    # Plotting the data w. geoplotlib
 	    print label + ":", inc
 	    print "Samples:", len(accidents)
-	    gpl.kde(plot_inc_d, bw=2, cut_below=2e-4)
+	    gpl.kde(plot_inc_d, bw=1, cut_below=2e-4)
 	    gpl.set_bbox(BoundingBox(north=40.93, west=-73.85, south=40.53, east=-73.83))
-	    gpl.inline()
+	    #gpl.inline()
+	    gpl.savefig('geo'+str(inc))
 	    plot_inc_d = {}
 
 # --------------------------------------------------------------- #

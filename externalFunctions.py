@@ -66,8 +66,28 @@ def plotGeoData(dataFrame, feature, label):
 	    print "Samples:", len(accidents)
 	    gpl.kde(plot_inc_d, bw=1, cut_below=2e-4)
 	    gpl.set_bbox(BoundingBox(north=40.93, west=-73.85, south=40.53, east=-73.83))
-	    #gpl.inline()
-	    gpl.savefig('geo'+str(inc))
+	    gpl.inline()
+	    plot_inc_d = {}
+
+        
+def saveGeoData(dataFrame, feature, label, tag):
+	plot_inc_d = {}
+	for inc in dataFrame[feature].unique():
+	    accidents = dataFrame.loc[dataFrame[feature].isin([inc])]
+	    
+	    plot_inc = {}
+	    plot_inc = accidents[['LATITUDE', 'LONGITUDE']]
+	    plot_inc.columns = ['lat','lon']
+	    
+	    for col in plot_inc.columns:
+	        plot_inc_d[col] = plot_inc[col].tolist()
+	    
+	    # Plotting the data w. geoplotlib
+	    print label + ":", inc
+	    print "Samples:", len(accidents)
+	    gpl.kde(plot_inc_d, bw=1, cut_below=2e-4)
+	    gpl.set_bbox(BoundingBox(north=40.93, west=-73.85, south=40.53, east=-73.83))
+	    gpl.savefig('geo'+str(tag)+"_"+str(inc))
 	    plot_inc_d = {}
 
 # --------------------------------------------------------------- #
